@@ -23,7 +23,7 @@ function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/quiz-data');
+                const response = await fetch('https://quiz-app-backend-tqxv.onrender.com');
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData?.message || 'Failed to load quiz data');
