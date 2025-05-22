@@ -1,38 +1,40 @@
 import { useState } from 'react';
 
-export default function Login({ onLogin }) {
+export default function Signup({ onSignup }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSignup = async () => {
         try {
-            const res = await fetch('http://localhost:5000/login', {
+            const response = await fetch('https://quiz-app-backend-tqxv.onrender.com/signup', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
             });
-            const data = await res.json();
-            if (res.ok) {
-                onLogin(data.user);
-            } else {
-                setError(data.message || 'Login failed');
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message || 'Signup failed');
+                return;
             }
+
+            onSignup(data.user);
         } catch (err) {
-            setError('Network error');
+            setError('Signup failed. Server error.');
         }
     };
 
     return (
-        <div className="auth-container">
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
-                <button type="submit">Login</button>
-                {error && <p className="error">{error}</p>}
-            </form>
+        <div className="auth-form">
+            <h2>Signup</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+            <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+            <button onClick={handleSignup}>Sign Up</button>
         </div>
     );
 }
